@@ -24,9 +24,9 @@ def parse(url):
         currency['euro buy'] = col[3].a.text
         currency['euro sell'] = col[4].a.text
 
-    file = open('currency_stats.txt', 'a+')
-    file.write(str(currency)+'\n')
-    file.close()
+    with open('currency_stats.txt', 'a+') as f:
+        f.write(str(currency)+'\n')
+        f.close()
     return currency
 
 

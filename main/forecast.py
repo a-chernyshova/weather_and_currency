@@ -66,9 +66,9 @@ def print_weather_forecast(url):
 
 
 def write_statistic():
-    file = open('weather_stats.txt', 'a+')
-    file.write(TIMESTAMP + str(params)+'\n')
-    file.close()
+    with open('weather_stats.txt', 'a+', encoding='utf-8') as f:
+        f.write(TIMESTAMP + str(params)+'\n')
+        f.close()
 
 
 def main():
