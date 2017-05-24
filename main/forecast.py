@@ -5,11 +5,7 @@ import datetime
 
 
 TIMESTAMP = datetime.datetime.today().strftime("%d.%m.%Y %H:%M:%S")
-CITY = ['NYC', 'SAN FRANCISCO', 'CHICAGO', 'MIAMI']
-API = ['https://www.theweathernetwork.com/us/api/data/usny0996/ci?ts=1752',
-       'https://www.theweathernetwork.com/us/api/data/usca0987/ci?ts=2152',
-       'https://www.theweathernetwork.com/us/api/data/usil0225/ci?ts=2152',
-       'https://www.theweathernetwork.com/us/api/data/usfl0316/ci?ts=2152']
+API1 = 'https://www.theweathernetwork.com/us/api/data/usny0996/ci?ts=1752'
 
 
 def get_html(url):
@@ -69,36 +65,21 @@ def print_weather_forecast(url):
     print(report)
 
 
-def write_statistic(city_index):
+def write_statistic():
     with open('weather_stats.txt', 'a+', encoding='utf-8') as f:
-        f.write(TIMESTAMP + ' ' + CITY[city_index-1] + ' ' + str(params)+'\n')
+        f.write(TIMESTAMP + str(params)+'\n')
         f.close()
 
 
-def choose_city():
-    city_index = int(input("Please enter number for city\n1 - NYC, NY\n2 - "
-                           "San Francisco, CA\n3 - Chicago, IL\n4 - Miami, FL\n"))
-    if city_index in [1, 2, 3, 4]:
-        return city_index - 1
-    else:
-        print('Invalid input data')
-        choose_city()
-
-
-def request_api(city_index):
-    print("{} weather forecast".format(CITY[city_index]))
-    print_weather_forecast(API[city_index])
-    advice(parse(API[city_index]))
-    write_statistic(city_index)
-
-
 def main():
-    request_api(choose_city())
+    print_weather_forecast(API1)
+    advice(parse(API1))
+    write_statistic()
 
 
 if __name__ == '__main__':
     main()
 
 
+# TODO: change location - list of 3 send request with argument
 # TODO: запуск каждый день по веремени автоматически для сбора статистики
-# TODO: parse statistic file - biuld lists of possible values for some parameters
