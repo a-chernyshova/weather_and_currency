@@ -5,11 +5,10 @@ import datetime
 
 
 TIMESTAMP = datetime.datetime.today().strftime("%d.%m.%Y %H:%M:%S")
-CITY = ['NYC', 'SAN FRANCISCO', 'CHICAGO', 'MIAMI']
-API = ['https://www.theweathernetwork.com/us/api/data/usny0996/ci?ts=1752',
-       'https://www.theweathernetwork.com/us/api/data/usca0987/ci?ts=2152',
-       'https://www.theweathernetwork.com/us/api/data/usil0225/ci?ts=2152',
-       'https://www.theweathernetwork.com/us/api/data/usfl0316/ci?ts=2152']
+CITIES = {'NYC': 'https://www.theweathernetwork.com/us/api/data/usny0996/ci?ts=1752',
+          'SAN FRANCISCO': 'https://www.theweathernetwork.com/us/api/data/usca0987/ci?ts=2152',
+          'CHICAGO': 'https://www.theweathernetwork.com/us/api/data/usil0225/ci?ts=2152',
+          'MIAMI': 'https://www.theweathernetwork.com/us/api/data/usfl0316/ci?ts=2152'}
 
 
 def get_html(url):
@@ -69,27 +68,29 @@ def print_weather_forecast(url):
     print(report)
 
 
-def write_statistic(city_index):
+def write_statistic(city):
     with open('weather_stats.txt', 'a+', encoding='utf-8') as f:
-        f.write(TIMESTAMP + ' ' + CITY[city_index-1] + ' ' + str(params)+'\n')
+        f.write(TIMESTAMP + ' ' + city + ' ' + str(params)+'\n')
         f.close()
 
 
 def choose_city():
-    city_index = int(input("Please enter number for city\n1 - NYC, NY\n2 - "
-                           "San Francisco, CA\n3 - Chicago, IL\n4 - Miami, FL\n"))
-    if city_index in [1, 2, 3, 4]:
-        return city_index - 1
+    city_index = input("Please enter number for city\n1 - NYC, NY\n2 - "
+                       "San Francisco, CA\n3 - Chicago, IL\n4 - Miami, FL\n")
+    if city_index in '1234':
+        city_index = int(city_index) - 1
+        city = list(CITIES.keys())[city_index]
+        return city
     else:
         print('Invalid input data')
         choose_city()
 
 
-def request_api(city_index):
-    print("{} weather forecast".format(CITY[city_index]))
-    print_weather_forecast(API[city_index])
-    advice(parse(API[city_index]))
-    write_statistic(city_index)
+def request_api(city):
+    print("{} weather forecast".format(city))
+    print_weather_forecast(CITIES[city])
+    advice(parse(CITIES[city]))
+    write_statistic(city)
 
 
 def main():
@@ -100,5 +101,6 @@ if __name__ == '__main__':
     main()
 
 
-# TODO: запуск каждый день по веремени автоматически для сбора статистики
-# TODO: parse statistic file - biuld lists of possible values for some parameters
+# FIXME: Traceback if you put wrong data to answer - choose a city
+# TODO: run every day at the same time to collect statistic
+# TODO: parse statistic file - build lists of possible values for some parameters
