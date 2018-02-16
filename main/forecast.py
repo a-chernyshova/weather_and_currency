@@ -2,6 +2,7 @@
 from urllib import request
 import json
 import datetime
+import smtplib
 
 
 TIMESTAMP = datetime.datetime.today().strftime("%d.%m.%Y %H:%M:%S")
@@ -66,6 +67,7 @@ def print_weather_forecast(url):
                          'Pressure:', params['pressure'], 'Next 3 hours: ', params['changes'],
                          'Sunrise:', params['sunrise'], 'Sunset:', params['sunset'])
     print(report)
+    return report
 
 
 def write_statistic(city):
@@ -88,9 +90,28 @@ def choose_city():
 
 def request_api(city):
     print("{} weather forecast".format(city))
-    print_weather_forecast(CITIES[city])
+    # print weather forecast and send it to email
+    data_to_send = print_weather_forecast(CITIES[city])
+    send_email(city, data_to_send)
     advice(parse(CITIES[city]))
     write_statistic(city)
+
+
+def send_email(city, data):
+    conn = smtplib.SMTP('smtp.mail.yahoo.com', 587)
+    conn.ehlo()
+    conn.starttls()
+    try:
+        message = 'Subject: weather in %s today\n\n' % city + data
+        conn.login('username@yahoo.com', 'password')
+        res = conn.sendmail('username@yahoo.com', 'username@yahoo.com', message)
+        if len(res) != 0:
+            print("Email wasn't send")
+    except Exception as e:
+        print(e)
+        print("Can't connect to email-box")
+    finally:
+        conn.quit()
 
 
 def main():
@@ -102,5 +123,4 @@ if __name__ == '__main__':
 
 
 # FIXME: Traceback if you put wrong data to answer - choose a city
-# TODO: run every day at the same time to collect statistic
 # TODO: parse statistic file - build lists of possible values for some parameters
